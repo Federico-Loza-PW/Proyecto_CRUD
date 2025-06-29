@@ -56,6 +56,10 @@ Usuario ADMIN:
 HASH $2b$10$WrDMHBPocj64vQvfbvAseeOtMtLBNugvi3m48AVQbaQimVDjLJGc6
 emai: admin@correo.com 
 contraseña admin: admin1234
+token: {
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJhZG1pbkBjb3JyZW8uY29tIiwiaWF0IjoxNzUwOTAzMzgxLCJleHAiOjE3NTA5MTA1ODF9.k_InI1ucK-0PKQQSFhS0YyTh4qoSYJyi_DMgsA8BRRE"
+}
+
 
 
 

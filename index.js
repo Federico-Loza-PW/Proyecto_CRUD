@@ -24,14 +24,22 @@ const authRoutes = require('./src/routes/auth.routes');
 const protegidoRoutes = require('./src/routes/protegido.routes');
 const mailRoutes = require('./src/routes/mail.routes');
 const stockRoutes = require('./src/routes/stock.routes');
-const catalogoRoutes = require('./src/routes/catalogo.routes');
 
 
-app.use('/auth', authRoutes); // Login y registro
-app.use('/api', protegidoRoutes); // Rutas protegidas con token + permisos
-app.use('/', mailRoutes); // Vista de contacto (público)
-app.use('/api/stock', stockRoutes); // Stock de productos
-app.use('/api', catalogoRoutes); // Catálogo de marcas y modelos
+const marcasRoutes = require('./src/routes/marcas.routes');
+const modelosRoutes = require('./src/routes/modelos.routes');
+const productosRoutes = require('./src/routes/productos.routes');
+
+
+app.use('/auth', authRoutes); 
+app.use('/', mailRoutes); 
+
+
+app.use('/api', protegidoRoutes); 
+app.use('/api/stock', stockRoutes); 
+app.use('/api/marcas', marcasRoutes);
+app.use('/api/modelos', modelosRoutes);
+app.use('/api/productos', productosRoutes);
 
 
 const PORT = 3000;
