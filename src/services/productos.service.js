@@ -29,4 +29,4 @@ exports.updateProducto = async (id, { id_modelo, producto, imagen_producto }) =>
 exports.deleteProducto = async (id) => {
   const [result] = await db.query('DELETE FROM productos WHERE id_producto = ?', [id]);
   return result.affectedRows > 0;
-};
+  };

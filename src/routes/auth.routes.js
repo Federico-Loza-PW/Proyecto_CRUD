@@ -15,11 +15,11 @@ router.post('/login', async (req, res) => {
     const user = rows[0];
 
     if (!user)
-      return res.status(401).json({ error: 'Usuario no encontrado' });
+      return res.status(401).json({ error: 'Usuario o contraseña incorrecto' });
 
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword)
-      return res.status(403).json({ error: 'Contraseña incorrecta' });
+      return res.status(403).json({ error: 'Usuario o contraseña incorrecta' });
 
     const token = jwt.sign(
       { id: user.id, email: user.email },

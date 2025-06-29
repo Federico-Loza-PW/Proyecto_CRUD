@@ -21,6 +21,7 @@ const authorizePermission = (permissionName) => {
   return async (req, res, next) => {
     const userId = req.user.id;
 
+
     try {
       const [result] = await pool.query(
         `SELECT p.action 
@@ -30,7 +31,8 @@ const authorizePermission = (permissionName) => {
          WHERE ur.user_id = ? AND p.action = ?`,
         [userId, permissionName]
       );
-
+        
+     
       if (result.length === 0) {
         return res.status(403).json({ error: 'Permiso denegado' });
       }

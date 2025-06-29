@@ -21,7 +21,6 @@ app.set('views', path.join(__dirname, 'src/views'));
 
 
 const authRoutes = require('./src/routes/auth.routes');
-const protegidoRoutes = require('./src/routes/protegido.routes');
 const mailRoutes = require('./src/routes/mail.routes');
 const stockRoutes = require('./src/routes/stock.routes');
 
@@ -35,7 +34,7 @@ app.use('/auth', authRoutes);
 app.use('/', mailRoutes); 
 
 
-app.use('/api', protegidoRoutes); 
+
 app.use('/api/stock', stockRoutes); 
 app.use('/api/marcas', marcasRoutes);
 app.use('/api/modelos', modelosRoutes);

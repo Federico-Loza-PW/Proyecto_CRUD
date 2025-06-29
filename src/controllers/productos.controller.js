@@ -5,7 +5,7 @@ exports.getAllProductos = async (req, res) => {
     const productos = await productoService.getAllProductos();
     res.json(productos);
   } catch (error) {
-    console.error("❌ Error al obtener productos:", error);
+    console.error("❌ Error en getAllProductos:", error);
     res.status(500).json({ error: 'Error al obtener productos' });
   }
 };

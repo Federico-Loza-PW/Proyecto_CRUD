@@ -1,32 +1,37 @@
 const db = require('../../db');
 
-exports.getAllProductos = async () => {
-  const [rows] = await db.query('SELECT * FROM productos');
+exports.getAllModelos = async () => {
+  const [rows] = await db.query('SELECT * FROM modelo');
   return rows;
 };
 
-exports.getProductoById = async (id) => {
-  const [rows] = await db.query('SELECT * FROM productos WHERE id_producto = ?', [id]);
+exports.getModeloById = async (id) => {
+  const [rows] = await db.query('SELECT * FROM modelo WHERE id_modelo = ?', [id]);
   return rows[0];
 };
 
-exports.createProducto = async ({ id_modelo, producto, imagen_producto }) => {
+exports.createModelo = async ({ id_marca, modelo, imagen_modelo }) => {
   const [result] = await db.query(
-    'INSERT INTO productos (id_modelo, producto, imagen_producto) VALUES (?, ?, ?)',
-    [id_modelo, producto, imagen_producto]
+    'INSERT INTO modelo (id_marca, modelo, imagen_modelo) VALUES (?, ?, ?)',
+    [id_marca, modelo, imagen_modelo]
   );
-  return { id: result.insertId, id_modelo, producto, imagen_producto };
+  return {
+    id: result.insertId,
+    id_marca,
+    modelo,
+    imagen_modelo,
+  };
 };
 
-exports.updateProducto = async (id, { id_modelo, producto, imagen_producto }) => {
+exports.updateModelo = async (id, { id_marca, modelo, imagen_modelo }) => {
   const [result] = await db.query(
-    'UPDATE productos SET id_modelo = ?, producto = ?, imagen_producto = ? WHERE id_producto = ?',
-    [id_modelo, producto, imagen_producto, id]
+    'UPDATE modelo SET id_marca = ?, modelo = ?, imagen_modelo = ? WHERE id_modelo = ?',
+    [id_marca, modelo, imagen_modelo, id]
   );
   return result.affectedRows > 0;
 };
 
-exports.deleteProducto = async (id) => {
-  const [result] = await db.query('DELETE FROM productos WHERE id_producto = ?', [id]);
+exports.deleteModelo = async (id) => {
+  const [result] = await db.query('DELETE FROM modelo WHERE id_modelo = ?', [id]);
   return result.affectedRows > 0;
 };

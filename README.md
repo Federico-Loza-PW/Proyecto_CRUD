@@ -48,12 +48,22 @@ La base SQL provisoria se encuentra en mi-api/APP
 
 Usuario :
 
+{
+  "email": "usuario@correo.com",
+  "password": "1234"
+}
+
   "email": "usuario@correo.com",
   "password": "1234"
 
 Usuario ADMIN:
 
 HASH $2b$10$WrDMHBPocj64vQvfbvAseeOtMtLBNugvi3m48AVQbaQimVDjLJGc6
+{
+  "email": "admin@correo.com",
+  "password": "admin1234"
+}
+
 emai: admin@correo.com 
 contraseña admin: admin1234
 token: {
