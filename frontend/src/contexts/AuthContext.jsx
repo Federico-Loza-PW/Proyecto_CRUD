@@ -5,22 +5,36 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
-    try {
-      const stored = localStorage.getItem('user');
-      return stored ? JSON.parse(stored) : null;
-    } catch (error) {
-      console.warn("Error al leer usuario del localStorage:", error);
-      localStorage.removeItem('user');
+    const stored = localStorage.getItem('user');
+    if (stored && typeof stored === 'string') {
+      try {
+        return JSON.parse(stored);
+      } catch (error) {
+        console.warn("Error al leer usuario del localStorage:", error);
+        localStorage.removeItem('user');
+        return null;
+      }
+    } else {
       return null;
     }
   });
 
   const login = async (credentials) => {
+  try {
     const { data } = await loginService(credentials);
-    setUser(data.user);
-    localStorage.setItem('user', JSON.stringify(data.user));
-    localStorage.setItem('token', data.token);
-  };
+    if (data && data.token) {
+      setUser({ email: credentials.email });
+      localStorage.setItem('user', JSON.stringify({ email: credentials.email }));
+      localStorage.setItem('token', data.token);
+    } else {
+      throw new Error('Invalid login response');
+    }
+  } catch (error) {
+    console.error('Login error:', error);
+    throw error; // rethrow error to handle it in the calling function
+  }
+};
+  
 
   const logout = () => {
     setUser(null);
@@ -36,6 +50,5 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
-
 
 export { AuthContext };
