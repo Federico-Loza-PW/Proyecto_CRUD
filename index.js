@@ -1,13 +1,14 @@
 const express = require('express');
 require('dotenv').config();
+const cors = require('cors');
 const app = express();
 const path = require('path');
 const exphbs = require('express-handlebars');
 
-
+app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-//app.use(express.static('public'));
+
 
 
 app.engine(
@@ -19,7 +20,10 @@ app.engine(
 );
 app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'src/views'));
-
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}));
 
 const authRoutes = require('./src/routes/auth.routes');
 const mailRoutes = require('./src/routes/mail.routes');
