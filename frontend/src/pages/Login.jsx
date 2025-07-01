@@ -1,34 +1,74 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import useAuth from '../hooks/useAuth';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { Container, Form, Button, Alert } from "react-bootstrap";
 
-function Login() {
-  const { login } = useAuth();
+const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
   const navigate = useNavigate();
-  const [credentials, setCredentials] = useState({ email: '', password: '' });
 
-  const handleChange = e => setCredentials({ ...credentials, [e.target.name]: e.target.value });
-
-  const handleSubmit = async e => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setError("");
+
     try {
-      await login(credentials);
-      navigate('/');
-    } catch (error) {
-      alert('Error al iniciar sesión');
+      const res = await axios.post("/auth/login", {
+        email,
+        password,
+      });
+
+      const { token, user } = res.data;
+      console.log("Login exitoso: ", res.data);
+
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", user.role);
+
+      // Redirigir según el rol
+      if (user.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
+    } catch (err) {
+      console.error("Error al iniciar sesión:", err);
+      setError("Credenciales inválidas o error del servidor.");
     }
   };
 
   return (
-    <div className="container mt-4">
+    <Container className="mt-4">
       <h2>Iniciar Sesión</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="email" name="email" className="form-control mb-2" placeholder="Correo" onChange={handleChange} required />
-        <input type="password" name="password" className="form-control mb-2" placeholder="Contraseña" onChange={handleChange} required />
-        <button type="submit" className="btn btn-primary">Entrar</button>
-      </form>
-    </div>
+      {error && <Alert variant="danger">{error}</Alert>}
+      <Form onSubmit={handleLogin}>
+        <Form.Group className="mb-3">
+          <Form.Label>Correo electrónico</Form.Label>
+          <Form.Control
+            type="email"
+            value={email}
+            required
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-3">
+          <Form.Label>Contraseña</Form.Label>
+          <Form.Control
+            type="password"
+            value={password}
+            required
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </Form.Group>
+
+        <Button type="submit" variant="primary">
+          Ingresar
+        </Button>
+      </Form>
+    </Container>
   );
-}
+};
 
 export default Login;

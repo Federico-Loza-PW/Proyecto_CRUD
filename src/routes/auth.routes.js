@@ -1,36 +1,41 @@
 const express = require('express');
 const router = express.Router();
+const db = require('../../db');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const pool = require('../../db');
 
+// POST /auth/login
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
-  if (!email || !password)
-    return res.status(400).json({ error: 'Faltan credenciales' });
-
   try {
-    const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
-    const user = rows[0];
+    const [results] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+    const user = results[0];
 
-    if (!user)
-      return res.status(401).json({ error: 'Usuario o contraseña incorrecto' });
+    if (!user) return res.status(401).json({ error: 'Usuario no encontrado' });
 
-    const validPassword = await bcrypt.compare(password, user.password);
-    if (!validPassword)
-      return res.status(403).json({ error: 'Usuario o contraseña incorrecta' });
+    const passwordMatch = await bcrypt.compare(password, user.password);
 
-    const token = jwt.sign(
-      { id: user.id, email: user.email },
-      process.env.JWT_SECRET,
-      { expiresIn: '1h' }
-    );
+    if (!passwordMatch) return res.status(401).json({ error: 'Contraseña incorrecta' });
 
-    res.json({ token });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Error en login' });
+    const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, {
+      expiresIn: '1h',
+    });
+
+    
+    res.json({
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name || '', // Opcional
+        role: user.role || ''  // Si tenés roles
+      }
+    });
+
+  } catch (error) {
+    console.error('Error al iniciar sesión:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
 

@@ -5,38 +5,28 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
-    const stored = localStorage.getItem('user');
-    if (stored && typeof stored === 'string') {
-      try {
-        return JSON.parse(stored);
-      } catch (error) {
-        console.warn("Error al leer usuario del localStorage:", error);
-        localStorage.removeItem('user');
-        return null;
-      }
-    } else {
+    try {
+      const stored = localStorage.getItem('user');
+      return stored ? JSON.parse(stored) : null;
+    } catch (error) {
+      console.warn("Error al leer usuario:", error);
+      localStorage.removeItem('user');
       return null;
     }
   });
-
-  const login = async (credentials) => {
-  try {
-    const { data } = await loginService(credentials);
-    if (data && data.token) {
-      setUser({ email: credentials.email });
-      localStorage.setItem('user', JSON.stringify({ email: credentials.email }));
-      localStorage.setItem('token', data.token);
-    } else {
-      throw new Error('Invalid login response');
-    }
-  } catch (error) {
-    console.error('Login error:', error);
-    throw error; // rethrow error to handle it in the calling function
-  }
-};
   
 
-  const logout = () => {
+  const login = async (credentials) => {
+    const { data } = await loginService(credentials);
+    console.log('Login exitoso:', data);
+    setUser(data.user);
+    localStorage.setItem('user', JSON.stringify(data.user));
+    localStorage.setItem('token', data.token);
+    localStorage.setItem("token", response.token);
+    localStorage.setItem("role", response.user.role);
+  };
+
+  const logout = () => {  
     setUser(null);
     localStorage.removeItem('user');
     localStorage.removeItem('token');
