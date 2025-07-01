@@ -1,39 +1,55 @@
-import { Link } from 'react-router-dom';
-import useAuth from '../hooks/useAuth';
+// /src/components/Navbar.jsx
+import React, { useContext } from "react";
+import { Navbar, Nav, Container, Button } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext";
 
-const Navbar = () => {
-  const { isAuthenticated, user, logout } = useAuth();
+const CustomNavbar = () => {
+  const { user, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-4">
-      <Link className="navbar-brand" to="/">Inicio</Link>
-      <div className="collapse navbar-collapse">
-        <ul className="navbar-nav ms-auto">
-          {!isAuthenticated ? (
-            <>
-              <li className="nav-item">
-                <Link className="nav-link" to="/login">Iniciar Sesión</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/register">Registrarse</Link>
-              </li>
-            </>
-          ) : (
-            <>
-              <li className="nav-item">
-                <span className="nav-link">Hola, {user?.name || user?.email}</span>
-              </li>
-              <li className="nav-item">
-                <button className="btn btn-outline-light btn-sm ms-2" onClick={logout}>
-                  Cerrar Sesión
-                </button>
-              </li>
-            </>
-          )}
-        </ul>
-      </div>
-    </nav>
+    <Navbar bg="dark" variant="dark" expand="lg">
+      <Container>
+        <Navbar.Brand as={Link} to="/">
+          Inicio
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="me-auto">
+            {user && (
+              <>
+                <Nav.Link as={Link} to="/marcas">Marcas</Nav.Link>
+                <Nav.Link as={Link} to="/modelos">Modelos</Nav.Link>
+                <Nav.Link as={Link} to="/productos">Productos</Nav.Link>
+              </>
+            )}
+            {user?.role === "admin" && (
+              <Nav.Link as={Link} to="/admin">Dashboard Admin</Nav.Link>
+            )}
+          </Nav>
+
+          <Nav>
+            {!user ? (
+              <>
+                <Nav.Link as={Link} to="/login">Login</Nav.Link>
+                <Nav.Link as={Link} to="/register">Registrarse</Nav.Link>
+              </>
+            ) : (
+              <Button variant="outline-light" onClick={handleLogout}>
+                Logout
+              </Button>
+            )}
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   );
 };
 
-export default Navbar;
+export default CustomNavbar;
