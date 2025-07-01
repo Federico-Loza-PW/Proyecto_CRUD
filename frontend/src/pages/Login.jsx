@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -21,7 +22,11 @@ const Login = () => {
       });
 
       const { token, user } = res.data;
-      console.log("Login exitoso: ", res.data);
+
+      // Logs CORRECTAMENTE ubicados dentro de la función
+      console.log("🔍 Token:", token);
+      console.log("🔍 Usuario:", user);
+      console.log("🔍 Rol:", user.role);
 
       localStorage.setItem("token", token);
       localStorage.setItem("role", user.role);

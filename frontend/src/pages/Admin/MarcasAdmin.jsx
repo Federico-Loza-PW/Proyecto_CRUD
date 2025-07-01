@@ -19,16 +19,25 @@ const MarcasAdmin = () => {
   const token = localStorage.getItem("token");
 
   const fetchMarcas = async () => {
-    try {
-      const res = await axios.get("/api/marcas", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setMarcas(res.data);
-    } catch (err) {
-      console.error("Error al obtener marcas", err);
-    }
-  };
+  try {
+    const res = await axios.get("/api/marcas", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    console.log("✅ Respuesta de /api/marcas:", res.data);
 
+    if (Array.isArray(res.data)) {
+      setMarcas(res.data);
+    } else if (res.data && Array.isArray(res.data.marcas)) {
+      // Si la API responde con { marcas: [...] }
+      setMarcas(res.data.marcas);
+    } else {
+      console.error("❌ La respuesta no es un array ni contiene 'marcas':", res.data);
+      setMarcas([]); // Para evitar error .map()
+    }
+  } catch (err) {
+    console.error("Error al obtener marcas", err);
+  }
+};
   useEffect(() => {
     fetchMarcas();
   }, []);

@@ -1,6 +1,3 @@
-
-
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
@@ -26,15 +23,25 @@ const ModelosAdmin = () => {
 
   const token = localStorage.getItem("token");
 
-  // Cargar modelos
+  // Definimos correctamente la función para traer modelos
   const fetchModelos = async () => {
     try {
       const res = await axios.get("/api/modelos", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setModelos(res.data);
+      console.log("✅ Respuesta de /api/modelos:", res.data);
+
+      if (Array.isArray(res.data)) {
+        setModelos(res.data);
+      } else if (res.data && Array.isArray(res.data.modelos)) {
+        setModelos(res.data.modelos);
+      } else {
+        console.error("❌ La respuesta no es un array ni contiene 'modelos':", res.data);
+        setModelos([]);
+      }
     } catch (err) {
-      console.error("Error cargando modelos", err);
+      console.error("Error al obtener modelos", err);
+      setModelos([]);
     }
   };
 
@@ -47,6 +54,7 @@ const ModelosAdmin = () => {
       setMarcas(res.data);
     } catch (err) {
       console.error("Error cargando marcas", err);
+      setMarcas([]);
     }
   };
 
@@ -154,7 +162,6 @@ const ModelosAdmin = () => {
         </tbody>
       </Table>
 
-      {/* Modal Crear / Editar */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>{isEditing ? "Editar Modelo" : "Nuevo Modelo"}</Modal.Title>

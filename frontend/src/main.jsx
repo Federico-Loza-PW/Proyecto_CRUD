@@ -5,7 +5,7 @@ import App from './App';
 import { AuthProvider } from './contexts/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/app.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import './services/axiosConfig'; 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

@@ -9,5 +9,8 @@ router.get('/:id', authenticateToken, authorizePermission('modelo:view'), modelo
 router.post('/', authenticateToken, authorizePermission('modelo:edit'), modeloController.createModelo);
 router.put('/:id', authenticateToken, authorizePermission('modelo:edit'), modeloController.updateModelo);
 router.delete('/:id', authenticateToken, authorizePermission('modelo:edit'), modeloController.deleteModelo);
-
+router.get('/', async (req, res) => {
+  const [rows] = await db.query('SELECT * FROM modelo');
+  res.json(rows);
+}); 
 module.exports = router;

@@ -132,7 +132,22 @@ const Home = () => {
       </div>
 
 
-
+    <div className="container mt-5">
+        <div className="row align-items-center flex-md-row-reverse">
+          <div className="col-md-6">
+            <img src="../../public/diego.png" className="img-fluid rounded" alt="Sponsors" />
+          </div>
+          <div className="col-md-6">
+            <h3 className= "fs-2" style={{ color: '#7c2bdc' }}>"Yo use chat GPT y pagué , pero el código... el código no se mancha"</h3>
+            <p className= "lead">
+              Por cuestiones de tiempo, me ayudé un poco bastante con chatpgt para terminar el front, pero a medida que queria avanzar 
+              me encontraba copiando codigo de correcciones que la misma IA se hacia. Ahora el proyecto es de ella y quedar mucho mejor
+              ahora que depender de nuestra benevola inteligencia superior<br />
+              <br />con amor niñito...
+            </p>
+          </div>
+        </div>
+      </div>
 
 
 
