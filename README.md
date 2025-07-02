@@ -104,3 +104,74 @@ La app incluye un control de roles:
 - `user`: acceso restringido (ver productos)
 
 Roles y permisos están definidos en las tablas `roles`, `permisos` y `roles_permisos`. La tabla `user_roles` asocia usuarios con roles.
+
+
+
+Front
+La ida general era mostrar una app de comercio donde hay una nav para loguearse, una imagen de presentación del proyecto en el centro , debajo se encuentran la descripcion de productos donde se verían las marcas trabajadas y cada una dirigiría a los modelos y productos en general.Esto sólo sería visible alingresar como usuario.
+Continuando se encuentran imagenes alusivas a la marca con textos y debajo las ofertas en imagenes .
+
+Al ingresar como administrador se encuentra un dashboard que puede agregar o modificar marcas, modificar modelos de autos pertenecientes a esas marcas y productos pertenecientes a los modelos.
+
+
+🧭 Navegación Frontend
+
+# Principales páginas del sistema:
+/
+|-- /login
+|-- /register
+|-- /marcas          # (Protegida - requiere login)
+|-- /modelos         # (Protegida - requiere login)
+|-- /productos       # (Protegida - requiere login)
+|-- /admin           # (Protegida - requiere admin)
+    |-- /admin/marcas
+    |-- /admin/modelos
+    |-- /admin/productos
+
+    Las rutas /admin/* son accesibles únicamente si el usuario tiene el rol admin.
+
+🛠️ Panel CRUD de Administración
+
+    📁 AdminDashboard:
+
+        Acceso directo a: Marcas, Modelos, Productos
+
+        Solo visible al estar logueado como admin
+
+    📄 MarcasAdmin.jsx
+
+        Tabla con lista de marcas (ID, Nombre)
+
+        Botones para editar/eliminar
+
+        Modal para crear/editar marcas
+
+    📄 ModelosAdmin.jsx
+
+        Muestra modelos y marca asociada
+
+        Relación con tabla de marcas (id_marca)
+
+    📄 ProductosAdmin.jsx
+
+        Incluye precio y stock
+
+        Asociado a modelos y marcas
+
+    Todos los formularios están construidos con React Bootstrap.
+
+📌 Notas Técnicas
+
+    Las imágenes de marcas están alojadas en /public/marcas/{nombre}.png
+
+    El proxy en Vite está configurado para redirigir /auth al backend:
+
+// vite.config.js
+server: {
+  proxy: {
+    '/auth': 'http://localhost:3000',
+  },
+}
+
+    El token se guarda en localStorage para autenticar todas las peticiones protegidas.
+
