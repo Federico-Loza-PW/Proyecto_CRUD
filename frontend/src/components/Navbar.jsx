@@ -1,6 +1,6 @@
-// /src/components/Navbar.jsx
+// /src/components/CustomNavbar.jsx
 import React, { useContext } from "react";
-import { Navbar, Nav, Container, Button } from "react-bootstrap";
+import { Navbar as BsNavbar, Nav, Container, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 
@@ -13,14 +13,16 @@ const CustomNavbar = () => {
     navigate("/");
   };
 
+  console.log("🧪 Usuario en contexto:", user);
+
   return (
-    <Navbar bg="dark" variant="dark" expand="lg">
+    <BsNavbar bg="dark" variant="dark" expand="lg">
       <Container>
-        <Navbar.Brand as={Link} to="/">
+        <BsNavbar.Brand as={Link} to="/">
           Inicio
-        </Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
+        </BsNavbar.Brand>
+        <BsNavbar.Toggle aria-controls="basic-navbar-nav" />
+        <BsNavbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             {user && (
               <>
@@ -46,9 +48,9 @@ const CustomNavbar = () => {
               </Button>
             )}
           </Nav>
-        </Navbar.Collapse>
+        </BsNavbar.Collapse>
       </Container>
-    </Navbar>
+    </BsNavbar>
   );
 };
 

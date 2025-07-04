@@ -10,14 +10,19 @@ exports.getProductoById = async (id) => {
   return rows[0];
 };
 
-exports.createProducto = async ({ id_modelo, producto, imagen_producto }) => {
-  const [result] = await db.query(
-    'INSERT INTO productos (id_modelo, producto, imagen_producto) VALUES (?, ?, ?)',
-    [id_modelo, producto, imagen_producto]
-  );
-  return { id: result.insertId, id_modelo, producto, imagen_producto };
-};
+exports.createProducto = async (data) => {
+  const conn = await pool.getConnection();
+  const { id_modelo, producto, imagen_producto } = data;
 
+  const imagenFinal = imagen_producto || '/productos/default.png';
+
+  const [result] = await conn.query(
+    `INSERT INTO productos (id_modelo, producto, imagen_producto) VALUES (?, ?, ?)`,
+    [id_modelo, producto, imagenFinal]
+  );
+  conn.release();
+  return result;
+};
 exports.updateProducto = async (id, { id_modelo, producto, imagen_producto }) => {
   const [result] = await db.query(
     'UPDATE productos SET id_modelo = ?, producto = ?, imagen_producto = ? WHERE id_producto = ?',

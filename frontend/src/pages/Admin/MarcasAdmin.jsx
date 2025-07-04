@@ -1,106 +1,69 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import {
-  Container,
-  Table,
-  Button,
-  Modal,
-  Form,
-  Row,
-  Col,
-} from "react-bootstrap";
+// src/pages/Admin/MarcasAdmin.jsx
+import React, { useEffect, useState } from 'react';
+import { Container, Table, Button, Modal, Form } from 'react-bootstrap';
+import axios from 'axios';
 
 const MarcasAdmin = () => {
   const [marcas, setMarcas] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({ id_marca: null, marca: "" });
-
-  const token = localStorage.getItem("token");
+  const [marcaActual, setMarcaActual] = useState({ id_marca: null, nombre: '' });
 
   const fetchMarcas = async () => {
-  try {
-    const res = await axios.get("/api/marcas", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    console.log("✅ Respuesta de /api/marcas:", res.data);
-
-    if (Array.isArray(res.data)) {
+    try {
+      const res = await axios.get('/marcas'); // Ajustar si usás prefijo como /api/marcas
       setMarcas(res.data);
-    } else if (res.data && Array.isArray(res.data.marcas)) {
-      // Si la API responde con { marcas: [...] }
-      setMarcas(res.data.marcas);
-    } else {
-      console.error("❌ La respuesta no es un array ni contiene 'marcas':", res.data);
-      setMarcas([]); // Para evitar error .map()
+    } catch (err) {
+      console.error('Error al cargar marcas:', err);
     }
-  } catch (err) {
-    console.error("Error al obtener marcas", err);
-  }
-};
+  };
+
   useEffect(() => {
     fetchMarcas();
   }, []);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, marca: e.target.value });
-  };
-
-  const handleCreate = () => {
-    setFormData({ id_marca: null, marca: "" });
-    setIsEditing(false);
+  const handleEditar = (marca) => {
+    setMarcaActual(marca);
     setShowModal(true);
   };
 
-  const handleEdit = (marca) => {
-    setFormData(marca);
-    setIsEditing(true);
-    setShowModal(true);
-  };
-
-  const handleDelete = async (id) => {
-    if (window.confirm("¿Estás seguro de eliminar esta marca?")) {
-      try {
-        await axios.delete(`/api/marcas/${id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        fetchMarcas();
-      } catch (err) {
-        console.error("Error al eliminar marca", err);
+  const handleGuardar = async () => {
+    try {
+      if (marcaActual.id_marca) {
+        await axios.put(`/marcas/${marcaActual.id_marca}`, marcaActual);
+      } else {
+        await axios.post('/marcas', marcaActual);
       }
+      fetchMarcas();
+      setShowModal(false);
+    } catch (err) {
+      console.error('Error al guardar marca:', err);
     }
   };
 
-  const handleSubmit = async () => {
+  const handleEliminar = async (id) => {
     try {
-      if (isEditing) {
-        await axios.put(`/api/marcas/${formData.id_marca}`, formData, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      } else {
-        await axios.post("/api/marcas", formData, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      }
-      setShowModal(false);
+      await axios.delete(`/marcas/${id}`);
       fetchMarcas();
     } catch (err) {
-      console.error("Error al guardar marca", err);
+      console.error('Error al eliminar marca:', err);
     }
   };
 
   return (
-    <Container className="mt-4">
-      <h2>Administrar Marcas</h2>
-      <Button className="mb-3" onClick={handleCreate}>
-        Agregar Marca
+    <Container className="mt-5">
+      <h2 className="text-center text-warning mb-4">Administrar Marcas</h2>
+      <Button variant="success" onClick={() => {
+        setMarcaActual({ id_marca: null, nombre: '' });
+        setShowModal(true);
+      }}>
+        + Nueva Marca
       </Button>
 
-      <Table striped bordered hover responsive>
+      <Table striped bordered hover variant="dark" className="mt-4">
         <thead>
           <tr>
             <th>ID</th>
-            <th>Marca</th>
+            <th>Nombre</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -108,55 +71,40 @@ const MarcasAdmin = () => {
           {marcas.map((marca) => (
             <tr key={marca.id_marca}>
               <td>{marca.id_marca}</td>
-              <td>{marca.marca}</td>
+              <td>{marca.nombre}</td>
               <td>
-                <Button
-                  variant="warning"
-                  size="sm"
-                  onClick={() => handleEdit(marca)}
-                  className="me-2"
-                >
-                  Editar
-                </Button>
-                <Button
-                  variant="danger"
-                  size="sm"
-                  onClick={() => handleDelete(marca.id_marca)}
-                >
-                  Eliminar
-                </Button>
+                <Button variant="warning" size="sm" onClick={() => handleEditar(marca)}>Editar</Button>{' '}
+                <Button variant="danger" size="sm" onClick={() => handleEliminar(marca.id_marca)}>Eliminar</Button>
               </td>
             </tr>
           ))}
         </tbody>
       </Table>
 
+      {/* Modal para agregar/editar marca */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>{isEditing ? "Editar Marca" : "Nueva Marca"}</Modal.Title>
+          <Modal.Title>{marcaActual.id_marca ? 'Editar Marca' : 'Nueva Marca'}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <Row>
-              <Col>
-                <Form.Group>
-                  <Form.Label>Nombre de la Marca</Form.Label>
-                  <Form.Control
-                    type="text"
-                    value={formData.marca}
-                    onChange={handleChange}
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
+            <Form.Group controlId="nombreMarca">
+              <Form.Label>Nombre</Form.Label>
+              <Form.Control
+                type="text"
+                value={marcaActual.nombre}
+                onChange={(e) => setMarcaActual({ ...marcaActual, nombre: e.target.value })}
+                placeholder="Ingrese el nombre de la marca"
+              />
+            </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowModal(false)}>
             Cancelar
           </Button>
-          <Button variant="primary" onClick={handleSubmit}>
-            {isEditing ? "Actualizar" : "Crear"}
+          <Button variant="primary" onClick={handleGuardar}>
+            Guardar
           </Button>
         </Modal.Footer>
       </Modal>

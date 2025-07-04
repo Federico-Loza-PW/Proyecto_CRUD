@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
+import Navbar from "./components/Navbar";
 
 import Home from './pages/home';
 import Login from './pages/Login';
@@ -19,7 +19,7 @@ import ModelosAdmin from "./pages/Admin/ModelosAdmin";
 import ProductosAdmin from "./pages/Admin/ProductosAdmin";
 
 import PrivateRoute from './components/PrivateRoute';
-import ProtectedRoute from './components/ProtectedRoute';
+import ProtectedRoute from './components/ProtectedRoute'; 
 
 function App() {
   return (
